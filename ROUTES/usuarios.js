@@ -1,15 +1,14 @@
-import express from "express"
-import usuariosController, { loginController } from "../CONTROLLERS/usuarios.js"
+import express from "express";
+import { controller } from "../CONTROLLERS/usuarios.js";
 
+const route = express.Router();
 
-const route = express.Router()
+route.post("/", controller.create);
+route.get("/", controller.getAll);
+route.get("/:id", controller.getOne);
+route.put("/:id", controller.update);
+route.delete("/:id", controller.deleteOne);
 
-route.post("/", usuariosController.create)
-route.get("/", usuariosController.getAll)
-route.get("/:id", usuariosController.getOne)
-route.put("/:id", usuariosController.upDate)
-route.delete("/:id", usuariosController.delete)
+route.post("/login", controller.login);
 
-route.post("/login", loginController)
-
-export default route
+export default route;

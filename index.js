@@ -1,18 +1,14 @@
 import express from "express";
-import routesMascotas from "./ROUTES/usuarios.js"
-import dotenv from "dotenv"
+import userRouter from "./ROUTES/usuarios.js";
+import dotenv from "dotenv";
 import connectDB from "./CONFIG/dbClient.js";
-connectDB()
-dotenv.config()
-const app = express()
-const PORT = 3000
+dotenv.config();
 
-app.use(express.json())
-app.use("/usuarios", routesMascotas)
+connectDB();
+const app = express();
+const PORT = 3000;
 
+app.use(express.json());
+app.use("/usuarios", userRouter);
 
-try {app.listen(PORT, ()=> console.log("Servidor activo"))
-
-} catch(e){
-    console.error("Error al conectar servidor")
-}
+app.listen(PORT, () => console.log("Servidor activo"));
