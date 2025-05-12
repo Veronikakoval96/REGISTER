@@ -1,18 +1,24 @@
 import express from "express";
-import routesMascotas from "./ROUTES/usuarios.js"
+import routesUsuarios from "./ROUTES/usuarios.js"
 import dotenv from "dotenv"
+
 import connectDB from "./CONFIG/dbClient.js";
-connectDB()
+import cloudinary from "cloudinary"
+
 dotenv.config()
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_secret: process.env.CLOUD_SECRET,
+    api_key: process.env.CLOUD_KEY
+})
+
+connectDB()
+
 const app = express()
 const PORT = 3000
 
 app.use(express.json())
-app.use("/usuarios", routesMascotas)
+app.use("/usuarios", routesUsuarios)
 
 
-try {app.listen(PORT, ()=> console.log("Servidor activo"))
-
-} catch(e){
-    console.error("Error al conectar servidor")
-}
+ app.listen(PORT, ()=> console.log("Servidor activo"));
