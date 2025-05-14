@@ -2,6 +2,7 @@ import User from "../MODELS/usuarios.js"
 import bcrypt from "bcrypt"
 import tokenHelper from "../HELPERS/token.js"
 import mongoose from "mongoose"
+import {v2 as cloudinary} from "cloudinary"
 
 
 class usuariosController {
@@ -10,9 +11,7 @@ class usuariosController {
     }
     async create (req,res){
         try{
-            console.log("🟡 Inicio de create");
-        console.log("BODY:", req.body);
-        console.log("FILE:", req.file);
+            
             const data =  new User(req.body)
             const userExist = await User.findOne({email: data.email})
             
@@ -26,10 +25,7 @@ class usuariosController {
                 console.log("No se ha recibido archivo");
             }
 
-            console.log("Antes de guardar en MongoDB");
             const userDB = await data.save();
-            console.log("Después de guardar en MongoDB");
-
             return res.status(201).json({mensaje:"Usuario creado", user:userDB} )
         } catch (e){
         console.error("Error al crear usuario", e)
@@ -54,7 +50,7 @@ class usuariosController {
                 return res.status(400).json({error: "ID invalido"})
             }
             console.log("Buscando usuario con ID", id)
-            const data = await User.findById(id)  
+            const data = await User.findById(id).populate("product")  
             if (!data){
                 return  res.status(404).json({ error: "Usuario no encontrado"})
             } 
@@ -76,20 +72,45 @@ class usuariosController {
 
             const Admin= req.user.role === "admin"
             const Own= String(req.user.id) === String(id)
-console.log("ID autenticado:", req.user.id)
-console.log("ID objetivo:", id)
-console.log("Es owner:", Own)
-console.log("Es admin:", Admin)
+            
+
             if (!Own && !Admin){
                 return res.status(403).json({error: "No estas autorizado para modificar esta cuenta"})
             }
             if (!Admin && req.body.role){
                 return res.status(403).json({error: "No estas autorizado para modificar tu rol"})
             }
-            const data = await User.findByIdAndUpdate(id, req.body, {new: true})
-            res.status(200).json(data)
-            console.log("Usuario modificado")
+
+            
+            const data = await User.findById(id)
+             if (!data) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+            const imgUrl = data.image
+
+            if (imgUrl){
+            const imgSplited = imgUrl.split('/')
+            const nameSplited = imgSplited.at(-1).split('.')[0]
+            const folderSplited = imgSplited.at(-2);
+            const public_id = `${folderSplited}/${nameSplited}`;
+
+    
+            await cloudinary.uploader.destroy(public_id)
+            console.log('Imagen eliminada en cloudinary')
+     }
+            if (req.file) {
+                console.log("Imagen subida:", req.file);
+                req.body.image = req.file.path; 
+            } else {
+                console.log("No se ha recibido archivo");
+            }
+
+            
+            const updatedUser = await User.findByIdAndUpdate(id, req.body, {new: true})
+            res.status(200).json(updatedUser)
+            console.log("Usuario modificado", updatedUser)
          }catch (e){
+            console.log(e)
         res.status(500).json("Error al modificar usuario")
     
     } 
@@ -102,28 +123,40 @@ console.log("Es admin:", Admin)
             const Admin= req.user.role === "admin"
             const Own= String(req.user.id) === String(id)
 
-            console.log("ID autenticado:", req.user.id)
-console.log("ID objetivo:", id)
-console.log("Es owner:", Own)
-console.log("Es admin:", Admin)
            
             if (req.user.role === "user" && !Own){
                 return res.status(403).json({error: "No estas autorizado para eliminar esta cuenta"})
             }
 
+            const data = await User.findById(id)
+             if (!data) {
+            return res.status(404).json({ error: "Usuario no encontrado" });
+        }
+            const imgUrl = data.image
 
-            
-            const data = await User.findByIdAndDelete(id)
-            
-            res.status(200).json(data)
+            if (imgUrl){
+            const imgSplited = imgUrl.split('/')
+            const nameSplited = imgSplited.at(-1).split('.')[0]
+            const folderSplited = imgSplited.at(-2);
+            const public_id = `${folderSplited}/${nameSplited}`;
+
+    
+            await cloudinary.uploader.destroy(public_id)
+            console.log('Imagen eliminada en cloudinary')
+     }
+            const deleteUser = await User.findByIdAndDelete(id)
             console.log("Usuario eliminado")
-        } catch (e){
+            res.status(200).json(deleteUser)
+            
+        }  
+        catch (e){
+            console.error(e)
         res.status(500).json("Error al eliminar usuario")
-    }
-    }
-
+    
    
 }
+    
+}}
 
 const login = async (req, res, next)=>{
     
