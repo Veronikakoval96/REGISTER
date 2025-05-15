@@ -165,18 +165,20 @@ const login = async (req, res, next)=>{
         const user = await User.findOne({email})
         if (!user){
            return res.status(404).json({ error: "Usuario no encontrado"})
-        }
-        if (bcrypt.compareSync(password, user.password)){
+        }console.log("Tipo de contraseña:", typeof password);
+        console.log("Contraseña recibida (raw):", JSON.stringify(password));
+
+        const comparacion = await bcrypt.compare(password, user.password)
+        if (!comparacion){
+            return res. status(400).json("Usuario o contraseña incorrectos")
+           }  
             const token = tokenHelper.generatetoken({_id: user._id, name: user.name, role: user.role})
             return res.status(200).json({ message: "Logueado", token, user})
-        }else { 
-             return res. status(400).json("Usuario o contraseña incorrectos")
-        }
-       
+      
         } 
     
     catch (error) {
-        return res.status(400).json("error")
+        return res.status(400).json("errorrr")
     }
 }
 

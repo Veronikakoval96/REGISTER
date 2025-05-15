@@ -16,7 +16,10 @@ const userSchema = new mongoose.Schema(
 },
 { timestamps: true})
 
-userSchema.pre("save", function (next){
+userSchema.pre("save", async function (next){
+    if (!this.isModified("password")) 
+        return next()
+
     if (this.password.length < 8 ){
         next( new Error("Password 8 characters minimum"))
     }

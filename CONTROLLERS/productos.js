@@ -71,6 +71,15 @@ console.log("Tipo:", typeof req.user.id);
         try{
             const {id} = req.params
             const producto = await Product.findById(id)
+            const Admin= req.user.role === "admin"
+            const Own= String(req.user.id) === String(producto.user)
+           
+
+            if (!Own && !Admin){
+                return res.status(403).json({error: "No estas autorizado para modificar este producto"})
+            }
+
+            
              if (!producto) {
             return res.status(404).json({ error: "Producto no encontrado" });
         }

@@ -1,6 +1,5 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import dotenv from "dotenv"
-import bcrypt from "bcrypt"
 import User from "../MODELS/usuarios.js"
 import Product from "../MODELS/productos.js"
 
@@ -15,20 +14,19 @@ const seedDB = async() =>{
         await Product.deleteMany({})
         console.log("BBDD limpia")
 
-        const passwordUser = await bcrypt.hash("12345678", 10)
-        const passwordUserDos = await bcrypt.hash("12345678", 10)
+       
 
         const user = await User.create({
-            "name": "Veronika",
+            "name": "Veronika22",
             "email": "veronika@veronika.com",
-            "password": passwordUser
+            "password": "12345678"
             
         })
 
         const userDos = await User.create({
-            "name": "Veronika22",
+            "name": "Veronika2222",
             "email": "veronika22@veronika.com",
-            "password": passwordUserDos
+            "password": "12345678"
             
         })
         console.log("Usuarios creados")
