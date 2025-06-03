@@ -13,8 +13,7 @@ class ProductsController {
     async create (req,res){
         try{
             const userId= req.user.id
-            console.log("ID recibido desde req.user:", req.user.id);
-console.log("Tipo:", typeof req.user.id);
+            
             if(!mongoose.Types.ObjectId.isValid(userId)){
                 return res.status(400).json({error: "ID  usuario no valido"})
             }
@@ -67,10 +66,14 @@ console.log("Tipo:", typeof req.user.id);
     } 
     
 
-    async upDate (req,res){
+    async update (req,res){
         try{
             const {id} = req.params
             const producto = await Product.findById(id)
+
+            if(!producto){
+                return res.status(400).json({error: "Producto no encontrado"})
+            }
             const Admin= req.user.role === "admin"
             const Own= String(req.user.id) === String(producto.user)
            
@@ -79,10 +82,7 @@ console.log("Tipo:", typeof req.user.id);
                 return res.status(403).json({error: "No estas autorizado para modificar este producto"})
             }
 
-            
-             if (!producto) {
-            return res.status(404).json({ error: "Producto no encontrado" });
-        }
+        
             const imgUrl = producto.image
 
             if (imgUrl){
@@ -122,6 +122,14 @@ console.log("Tipo:", typeof req.user.id);
              if (!producto) {
             return res.status(404).json({ error: "Producto no encontrado" });
         }
+
+        const Admin= req.user.role === "admin"
+            const Own= String(req.user.id) === String(producto.user)
+           
+
+            if (!Own && !Admin){
+                return res.status(403).json({error: "No estas autorizado para modificar este producto"})
+            }
             const imgUrl = producto.image
 
             if (imgUrl){

@@ -66,7 +66,7 @@ class usuariosController {
     } 
     
 
-    async upDate (req,res){
+    async update (req,res){
         try{
             const {id} = req.params
 
@@ -105,6 +105,9 @@ class usuariosController {
                 console.log("No se ha recibido archivo");
             }
 
+            if(req.body.password){
+                req.body.password = await bcrypt.hash(req.body.password, 10)
+            }
             
             const updatedUser = await User.findByIdAndUpdate(id, req.body, {new: true})
             res.status(200).json(updatedUser)
@@ -165,8 +168,7 @@ const login = async (req, res, next)=>{
         const user = await User.findOne({email})
         if (!user){
            return res.status(404).json({ error: "Usuario no encontrado"})
-        }console.log("Tipo de contraseña:", typeof password);
-        console.log("Contraseña recibida (raw):", JSON.stringify(password));
+        };
 
         const comparacion = await bcrypt.compare(password, user.password)
         if (!comparacion){
@@ -178,7 +180,8 @@ const login = async (req, res, next)=>{
         } 
     
     catch (error) {
-        return res.status(400).json("errorrr")
+        console.error("Error al loguearte", error)
+        return res.status(400).json({ error: "Error al loguearte"})
     }
 }
 

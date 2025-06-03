@@ -64,18 +64,38 @@ En esta carpeta nos encontramos con el archivo dbClient.js donde establecemos co
 
 
 
-## .ENV
+## PONER EN MARCHA
 
-- PASSWORD =4UZa7lEfXPOfAAOt
-- JWT_PASSWORD =veronika1234
-- CLOUD_NAME=drygidj78
-- CLOUD_SECRET=_bfiDB_QLsMANPrhom8udOmB0LQ
-- CLOUD_KEY=456716565721621
+   - Abrir el proyecto clonando el repositorio:
+ 
+```sh
+git clone https://github.com/Veronikakoval96/REGISTER.git
+```
+- Ejecurtar el proyecto mediante:
+```sh
+npm run dev
+```
+- Probar con Insomnia o ThunderClient
+
+## ENDPOINTS
+#### USERS
+
+| NAME | METHOD | ENDPOINT | AUTH | BODY | CONTENT TYPE| RESPONSE|
+| ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+| CREATE | POST| usuarios/|---|{name*, email*, password*, role(USER PREDETERMINADO), image?}| JSON| {user}|
+|LOGIN| POST| usuarios/login/|---| {email, password}| JSON| {token, user}|
+|GET USERS| GET| usuarios/|---| ---|---| [users]|
+|GET USER| GET| usuarios/:id/| ---|---|---| {user}|
+| MODIFY USER| PUT| usuarios/:id/| Admin or Owner| user data| JSON| {user}|
+|DELETE USER| DELETE | usuarios/:id/| Admin or Owner| --- |---| {user}|
 
 
+#### PRODUCTS
 
-
-
-
-
-
+| NAME | METHOD | ENDPOINT | AUTH | BODY | CONTENT TYPE| RESPONSE|
+| ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+| CREATE | POST| productos/|Token|{type*, price*, status*, image?}| JSON| {product}|
+|GET PRODUCTS| GET| productos/|---| ---|---| [products]|
+|GET PRODUCT| GET| productos/:id/| ---|---|---| {product}|
+| MODIFY PRODUCT| PUT| productos/:id/| Admin or Owner| product data| JSON| {product}|
+|DELETE PRODUCT| DELETE | productos/:id/| Admin or Owner| --- |---| {product}|

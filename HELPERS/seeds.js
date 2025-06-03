@@ -23,13 +23,8 @@ const seedDB = async() =>{
             
         })
 
-        const userDos = await User.create({
-            "name": "Veronika2222",
-            "email": "veronika22@veronika.com",
-            "password": "12345678"
-            
-        })
-        console.log("Usuarios creados")
+        
+        console.log("Usuario creado")
 
         const products = await Product.insertMany([
             {type: "Gorra", price: 10, status: "new", user: user._id},
@@ -48,4 +43,4 @@ const seedDB = async() =>{
     }
 }
 
-export default seedDB()
+export default seedDB

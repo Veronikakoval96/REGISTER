@@ -9,7 +9,7 @@ const route = express.Router()
 route.post("/", upload.single("image"), usuariosController.create)
 route.get("/", usuariosController.getAll)
 route.get("/:id", usuariosController.getOne)
-route.put("/:id", checkAuth, upload.single("image"), usuariosController.upDate)
+route.put("/:id", checkAuth, upload.single("image"), usuariosController.update)
 route.delete("/:id", checkAuth,  usuariosController.delete)
 
 

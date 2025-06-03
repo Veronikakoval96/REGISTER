@@ -19,12 +19,12 @@ const userSchema = new mongoose.Schema(
 userSchema.pre("save", async function (next){
     if (!this.isModified("password")) 
         return next()
-
-    if (this.password.length < 8 ){
-        next( new Error("Password 8 characters minimum"))
-    }
-    this.password = bcrypt.hashSync(this.password, 10)
-next()
+    try{
+    this.password =  await bcrypt.hash(this.password, 10)
+    next()
+    } catch(error){
+    next(error)
+}
 } )
 
 export default mongoose.model("User", userSchema)

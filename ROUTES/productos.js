@@ -8,7 +8,7 @@ const productRoute = express.Router()
 productRoute.post("/", checkAuth, upload.single("image"), ProductosController.create)
 productRoute.get("/:id", ProductosController.getOne)
 productRoute.get("/", ProductosController.getAll)
-productRoute.put("/:id",checkAuth, upload.single("image"), ProductosController.upDate)
+productRoute.put("/:id",checkAuth, upload.single("image"), ProductosController.update)
 productRoute.delete("/:id",checkAuth, ProductosController.delete)
 
 export default productRoute
